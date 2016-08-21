@@ -22,6 +22,7 @@ public class Instance {
 	private int instResponseTime;
 	
 	@ManyToOne
+	@JsonIgnore
 	private FailureView failureView;
 
 	public FailureView getFailureView() {

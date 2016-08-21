@@ -1,5 +1,7 @@
 package jp.ac.nii.prl.mape.failure.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jp.ac.nii.prl.mape.failure.ViewNotFoundException;
 import jp.ac.nii.prl.mape.failure.model.FailureView;
+import jp.ac.nii.prl.mape.failure.model.Instance;
 import jp.ac.nii.prl.mape.failure.service.FailureViewService;
 
 @RestController
@@ -35,26 +38,29 @@ public class FailureController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<?> createView(@RequestBody FailureView view) {
-		failureViewService.save(view);
-		failureViewService.analyse(view);
-		
-		// create response
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setLocation(ServletUriComponentsBuilder
-				.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(view.getId()).toUri());
-		return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
+	public FailureView createView(@RequestBody FailureView view) {
+		return failureViewService.analyse(view);
 	}
 	
-	@RequestMapping(value="/{viewId}", method=RequestMethod.GET)
-	public FailureView getView(@PathVariable Long viewId) {
-		Optional<FailureView> view = failureViewService.findById(viewId);
-		if (view.isPresent()) {
-			logger.debug("Found view " + view.get().getId());
-			return view.get();
-		}
-		logger.error("Could not find view with ID " + viewId);
-		throw new ViewNotFoundException(String.format("Could not find view with id %s", viewId));
+	@RequestMapping(value="/test", method=RequestMethod.GET)
+	public FailureView test() {
+		FailureView view = new FailureView();
+		List<Instance> instances = new ArrayList<>();
+		Instance inst1 = new Instance();
+		inst1.setInstID("inst-1");
+		inst1.setInstResponseTime(300);
+		inst1.setInstType("t2.micro");
+		inst1.setFailureView(view);
+		instances.add(inst1);
+		
+		Instance inst2 = new Instance();
+		inst2.setInstID("inst-2");
+		inst2.setInstResponseTime(300);
+		inst2.setInstType("t3.micro");
+		inst2.setFailureView(view);
+		instances.add(inst2);
+		
+		view.setInstances(instances);
+		return view;
 	}
 }

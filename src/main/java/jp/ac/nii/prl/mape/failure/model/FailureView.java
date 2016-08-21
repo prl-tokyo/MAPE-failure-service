@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -18,6 +19,7 @@ public class FailureView {
 	private Long id;
 	
 	@OneToMany(mappedBy="failureView")
+	@NotNull
 	private List<Instance> instances;
 
 	public Long getId() {
