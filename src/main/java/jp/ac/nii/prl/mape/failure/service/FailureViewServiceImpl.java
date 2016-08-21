@@ -1,6 +1,7 @@
 package jp.ac.nii.prl.mape.failure.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class FailureViewServiceImpl implements FailureViewService {
 				instances.remove(instance);
 				Instance newInstance = new Instance();
 				newInstance.setFailureView(view);
-				newInstance.setInstID("");
+				newInstance.setInstID(UUID.randomUUID().toString());
 				newInstance.setInstType(instance.getInstType());
 				newInstance.setInstResponseTime(-1);
 				instances.add(newInstance);
